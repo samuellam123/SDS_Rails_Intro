@@ -12,6 +12,7 @@ class MoviesController < ApplicationController
 
   def new
     # default: render 'new' template
+    render "new.html.erb"
   end
 
   def create
@@ -44,4 +45,6 @@ class MoviesController < ApplicationController
   def movie_params
     params.require(:movie).permit(:title, :rating, :description, :release_date)
   end
+
+  
 end
