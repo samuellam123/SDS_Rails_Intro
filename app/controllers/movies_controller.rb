@@ -8,12 +8,18 @@ class MoviesController < ApplicationController
 
   def index
     @all_ratings = Movie.all_ratings
-    @ratings_to_show = params[:ratings] ? params[:ratings].keys : @all_ratings
+
+    # Store sorting and filtering settings in session if provided in params
+    session[:ratings] = params[:ratings] if params[:ratings]
+    session[:sort_by] = params[:sort_by] if params[:sort_by]
+
+    # Use session settings if available, otherwise use default values
+    @ratings_to_show = session[:ratings] ? session[:ratings].keys : @all_ratings
     @ratings_to_show_hash = Hash[@ratings_to_show.map { |rating| [rating, 1] }]
+
+    @sort_column = session[:sort_by]
     
     @movies = Movie.with_ratings(@ratings_to_show)
-    
-    @sort_column = params[:sort_by]
     if @sort_column
       @movies = @movies.order(@sort_column)
     end
@@ -55,6 +61,4 @@ class MoviesController < ApplicationController
     params.require(:movie).permit(:title, :rating, :description, :release_date)
   end
 
-
 end
-

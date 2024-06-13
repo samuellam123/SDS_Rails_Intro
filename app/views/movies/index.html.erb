@@ -1,13 +1,12 @@
 <!--  This file is app/views/movies/index.html.erb -->
 <h2>All Movies</h2>
 
-<%#  Part 2: Start here... %>
 <%= form_tag movies_path, method: :get, id: 'ratings_form' do %>
   Include:
   <% @all_ratings.each do |rating| %>
-    <div class="form-check  form-check-inline">
+    <div class="form-check form-check-inline">
       <%= label_tag "ratings[#{rating}]", rating, class: 'form-check-label' %>
-      <%= check_box_tag "ratings[#{rating}]", "1",  @ratings_to_show_hash.include?(rating), class: 'form-check-input' %>
+      <%= check_box_tag "ratings[#{rating}]", "1", @ratings_to_show_hash.include?(rating), class: 'form-check-input' %>
     </div>
   <% end %>
   <%= submit_tag 'Refresh', id: 'ratings_submit', class: 'btn btn-primary' %>
@@ -45,4 +44,5 @@
     <% end %>
   </tbody>
 </table>
-<%= link_to 'Add new movie', new_movie_path, :class => 'btn btn-primary' %>
+<%= link_to 'Add new movie', new_movie_path, class: 'btn btn-primary' %>
+<%= link_to 'Back to List', movies_path(sort_by: session[:sort_by], ratings: session[:ratings]), class: 'btn btn-secondary' %>
