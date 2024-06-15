@@ -1,32 +1,28 @@
 class MoviesController < ApplicationController
   
   def show
-    id = params[:id] # retrieve movie ID from URI route
-    @movie = Movie.find(id) # look up movie by unique ID
-    # will render app/views/movies/show.<extension> by default
+    id = params[:id]
+    @movie = Movie.find(id)
   end
 
   def index
     @all_ratings = Movie.all_ratings
 
-    # Store sorting and filtering settings in session if provided in params
     session[:ratings] = params[:ratings] if params[:ratings]
     session[:sort_by] = params[:sort_by] if params[:sort_by]
 
-    # Use session settings if available, otherwise use default values
-    @ratings_to_show = session[:ratings] ? session[:ratings].keys : @all_ratings
+    @ratings_to_show = params[:ratings] ? params[:ratings].keys : session[:ratings] ? session[:ratings].keys : @all_ratings
     @ratings_to_show_hash = Hash[@ratings_to_show.map { |rating| [rating, 1] }]
 
-    @sort_column = session[:sort_by]
+    @sort_column = params[:sort_by] || session[:sort_by]
+    session[:ratings] = @ratings_to_show_hash if params[:ratings]
+    session[:sort_by] = @sort_column if params[:sort_by]
     
     @movies = Movie.with_ratings(@ratings_to_show)
-    if @sort_column
-      @movies = @movies.order(@sort_column)
-    end
+    @movies = @movies.order(@sort_column) if @sort_column
   end
 
   def new
-    # default: render 'new' template
     render "new.html.erb"
   end
 
@@ -55,8 +51,7 @@ class MoviesController < ApplicationController
   end
 
   private
-  # Making "internal" methods private is not required, but is a common practice.
-  # This helps make clear which methods respond to requests, and which ones do not.
+
   def movie_params
     params.require(:movie).permit(:title, :rating, :description, :release_date)
   end
