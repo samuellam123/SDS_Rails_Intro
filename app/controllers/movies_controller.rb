@@ -17,10 +17,11 @@ class MoviesController < ApplicationController
     @sort_column = params[:sort_by] || session[:sort_by]
     session[:ratings] = @ratings_to_show_hash if params[:ratings]
     session[:sort_by] = @sort_column if params[:sort_by]
-    
+
     @movies = Movie.with_ratings(@ratings_to_show)
     @movies = @movies.order(@sort_column) if @sort_column
   end
+  
 
   def new
     render "new.html.erb"
