@@ -20,6 +20,7 @@ class MoviesController < ApplicationController
 
     @movies = Movie.with_ratings(@ratings_to_show)
     @movies = @movies.order(@sort_column) if @sort_column
+
   end
   
 
